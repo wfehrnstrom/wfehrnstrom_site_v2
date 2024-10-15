@@ -1,0 +1,78 @@
+---
+import { Image } from 'astro:assets';
+
+import myPicture from '../resources/images/me.jpg';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<div>
+			<h1 class='title-name'>Will Fehrnstrom</h1>
+			<div class='my-image-container'>
+				<Image src={myPicture} alt="A picture of me in Central Park with the New York Skyline in the background" object-fit="cover" class="my-image"/>
+			</div>
+		</div>
+	</body>
+</html>
+<style is:global>
+	@import '../styles/main.css';
+
+	:root {
+		--accent: rgb(150, 150, 150);
+		--accent-light: rgb(238, 238, 238);
+		--accent-dark: rgb(49, 49, 49);
+		--accent-gradient: linear-gradient(
+			45deg,
+			rgb(var(--accent)),
+			rgb(var(--accent-light)) 30%,
+			white 60%
+		);
+	}
+	html {
+		font-family: 'Manrope', system-ui, sans-serif;
+		background: #ffffff;
+		background-color: 
+	}
+	code {
+		font-family:
+			
+	}
+
+	img {
+		display: block;
+		margin: auto;
+		height: 100%;
+	}
+</style>
+
+<style>
+	.title-name {
+		font-size: 3rem;
+	}
+
+	.my-image-container {
+		max-width: 20vw;
+		width: 20vw;
+		margin: 0;
+		padding: 0;
+	}
+
+	.my-image {
+		width: 100%;
+	}
+</style>
