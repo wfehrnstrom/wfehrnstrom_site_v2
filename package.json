@@ -15,5 +15,12 @@
     "git": "^0.1.5",
     "sass": "^1.80.6",
     "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "postcss-html": "^1.7.0",
+    "postcss-scss": "^4.0.9",
+    "stylelint": "^16.10.0",
+    "stylelint-config-html": "^1.1.0",
+    "stylelint-config-standard": "^36.0.1"
   }
 }
