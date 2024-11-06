@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 
-import myPicture from '../resources/images/me-cropped.jpg';
 import githubLogo from '../../public/logos/github-mark.png';
 import linkedinLogo from '../../public/logos/linkedinlogo-bw.png';
 import spotifyLogo from '../../public/logos/spotify-logo-bw.png';
@@ -112,24 +111,5 @@ import ProgressBar from '../components/ProgressBar.astro';
 
 	.external-links img:last-of-type {
 		margin-right: 0;
-	}
-
-	.my-image-container {
-		position: relative;
-		flex: 1 3 26rem;
-		margin: 0;
-		padding: 0;
-		width: 26rem;
-		height: 26rem;
-	}
-
-	.my-image {
-		position: absolute;
-		left: 0;
-		top: 0;
-		display: block;
-		margin-left: 0;
-		width: 100%;
-		object-fit: contain;
 	}
 </style>
