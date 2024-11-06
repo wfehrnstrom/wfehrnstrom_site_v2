@@ -1,42 +1,47 @@
 <div id="about-me" class="about-me-page page">
-    <div class="about-me-wrapper">
-        <h1 class="page-title">
-            About Me
-        </h1>
-        <p class="about-me-text">
-            Hi, and thanks for visiting my site. I'm a Software Engineer currently based in East Boston. I like to work across a wide array of challenging problem areas: in the past I've done work on drones, tackled Microelectromechanical system computer vision problems, programmed remote sensing LIDAR analysis tools, and studied advanced networking protocols like <strong>Named Data Networking</strong>. Most recently, I worked within <strong>Amazon AGI</strong> as an SDE II on informational Q&A backend systems that help make intelligent decisions on behalf of the customer.
-        </p>
-        <p>
-            I'm currently researching the emergent properties of nonlinear ecological systems and their intelligent management motivated by climate change.
-        </p>
-        <p class="about-me-text">
-            I also love philosophy, literature, music, and cinema. I sometimes write poetry and I'm starting to DJ in my spare time. Please don't hesitate to reach out to me if you think I might be a good fit for a vexxing problem you're working on, or if you just want to chat about life.
-        </p>
-    </div>
+    <h1 class="page-title">
+        About Me
+    </h1>
+    <p class="about-me-text">
+        Hi, and thanks for visiting my site. I'm a Software Engineer currently based in East Boston. I like to work across a wide array of challenging problem areas: in the past I've done work on drones, tackled Microelectromechanical system computer vision problems, programmed remote sensing LIDAR analysis tools, and studied advanced networking protocols like <strong>Named Data Networking</strong>. Most recently, I worked within <strong>Amazon AGI</strong> as an SDE II on informational Q&A backend systems that help make intelligent decisions on behalf of the customer.
+    </p>
+    <p>
+        I'm currently researching the emergent properties of nonlinear ecological systems and their intelligent management motivated by climate change.
+    </p>
+    <p class="about-me-text">
+        I also love philosophy, literature, music, and cinema. I sometimes write poetry and I'm starting to DJ in my spare time. Please don't hesitate to reach out to me if you think I might be a good fit for a vexxing problem you're working on, or if you just want to chat about life.
+    </p>
 </div>
 
-<style>
-    .about-me-page {
-        position: relative;
+<style lang="scss">
+    // A simple page has one element set off from the border of the page and is always the full viewport height
+    // In this mixin, I take the convention that padding will not affect the final page width and height. 
+    @mixin simple-page($padding-left, $padding-top) {
+        width: calc(100% - $padding-left);
+        height: calc(100vh - $padding-top);
+        
+        padding-left: $padding-left;
+        padding-top: $padding-top;
+    }
+
+    @mixin grey-contrast-scheme {
         background-color: rgb(48 48 48);
+        color: rgb(212 212 212);
+    }
+
+    .about-me-page {
+        @include simple-page(5vw, 30vh);
+        @include grey-contrast-scheme;
+
+        position: relative;
         z-index: 1;
     }
 
-    h1 {
-        color: rgb(212 212 212);
-    }
-
-    .about-me-wrapper {
-        padding-top: 30vh;
-        margin-left: 5vw;
-    }
-
-    .about-me-text {
-        width: 50vw;
+    .about-me-page * {
+        max-width: 50vw;
     }
 
     p {
-        color: rgb(212 212 212);
         line-height: 1.75;
     }
 </style>
