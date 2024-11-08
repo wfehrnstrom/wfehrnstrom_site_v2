@@ -9,7 +9,7 @@ import ProgressBar from '../components/ProgressBar.astro';
 ---
 
 <div class="header-page page">
-    <div class="centered header-wrapper">
+    <div class="header-wrapper">
         <div class="header-menu-container">
             <h1 class="page-title title-name">Will Fehrnstrom</h1>
 			<ProgressBar/>
@@ -27,7 +27,11 @@ import ProgressBar from '../components/ProgressBar.astro';
     </div>		
 </div>
 
-<style>
+<style lang="scss">
+	@use '../styles/_mixins.scss' as *;
+
+	@import url('../styles/main.scss');
+
 	.header-page {
 		position: sticky;
 		top: 0;
@@ -37,6 +41,8 @@ import ProgressBar from '../components/ProgressBar.astro';
 	}
 
 	.header-wrapper {
+		@include centered-in-parent;
+
 		width: 90vw;
 		display: flex;
 	}
