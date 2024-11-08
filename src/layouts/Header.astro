@@ -12,12 +12,12 @@ import ProgressBar from '../components/ProgressBar.astro';
     <div class="header-wrapper">
         <div class="header-menu-container">
             <h1 class="page-title title-name">Will Fehrnstrom</h1>
-			<ProgressBar/>
+			<ProgressBar reversed/>
             <ul class="header-navigation-menu">
                 <li><a href="#about-me">About Me</a></li>
                 <li><a href="https://drive.google.com/file/d/1gpMcLU_fAqnOaEJdMx6SarLoOVDa6Khh/view?usp=sharing">Resume</a></li>
             </ul>
-			<ProgressBar reversed/>
+			<ProgressBar/>
             <div class="external-links">
                 <a href="https://github.com/wfehrnstrom"><Image src={githubLogo} alt="Github Octocat" loading="eager"/></a>
                 <a href="https://www.linkedin.com/in/william-f-aba4a5119/"><Image src={linkedinLogo} 			alt="LinkedIn Symbol" loading="eager"/></a>
@@ -60,7 +60,7 @@ import ProgressBar from '../components/ProgressBar.astro';
 	.header-navigation-menu {
 		display: inline-flex;
 		list-style-type: none;
-		margin: 1.89rem 0 1.89rem 1.26rem;
+		margin: 1.89rem 0 1.89rem 2.5rem;
 		padding: 0;
 	}
 
@@ -99,7 +99,7 @@ import ProgressBar from '../components/ProgressBar.astro';
 
 	.external-links {
 		display: flex;
-		margin: 3rem 0 0 1.26rem;
+		margin: 3rem 0 0 2.5rem;
 	}
 
 	.external-links a:hover {
