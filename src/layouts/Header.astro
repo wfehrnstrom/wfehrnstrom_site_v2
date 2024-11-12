@@ -5,19 +5,19 @@ import githubLogo from '../../public/logos/github-mark.png';
 import linkedinLogo from '../../public/logos/linkedinlogo-bw.png';
 import spotifyLogo from '../../public/logos/spotify-logo-bw.png';
 
-import ProgressBar from '../components/ProgressBar.astro';
+import SlantedLoadingDivider from '../components/SlantedLoadingDivider.astro';
 ---
 
 <div class="header-page page">
     <div class="header-wrapper">
         <div class="header-menu-container">
             <h1 class="page-title title-name">Will Fehrnstrom</h1>
-			<ProgressBar reversed/>
+			<SlantedLoadingDivider slant="backwards"/>
             <ul class="header-navigation-menu">
                 <li><a href="#about-me">About Me</a></li>
                 <li><a href="https://drive.google.com/file/d/1gpMcLU_fAqnOaEJdMx6SarLoOVDa6Khh/view?usp=sharing">Resume</a></li>
             </ul>
-			<ProgressBar/>
+			<SlantedLoadingDivider slant="forwards"/>
             <div class="external-links">
                 <a href="https://github.com/wfehrnstrom"><Image src={githubLogo} alt="Github Octocat" loading="eager"/></a>
                 <a href="https://www.linkedin.com/in/william-f-aba4a5119/"><Image src={linkedinLogo} 			alt="LinkedIn Symbol" loading="eager"/></a>

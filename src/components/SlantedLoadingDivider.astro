@@ -1,0 +1,108 @@
+---
+
+// TODO: not super set on this progress/loading bar naming convention, because although it could be used as a
+//  loading bar element in a different context and looks like one, it's just a stylistic motif in the header for now.
+
+import { Image } from 'astro:assets';
+
+import forwardSlantingDivider from '../resources/images/progress-bar.png';
+import backSlantingDivider from '../resources/images/mirrored-progress-bar.png'
+
+interface Props {
+  slant?: string;
+  delay?: string;
+  duration?: string;
+}
+
+const {slant = "forwards", delay = "0", duration = "5s"} = Astro.props;
+
+
+let imageSource;
+
+if (slant === "forwards") {
+    imageSource = forwardSlantingDivider;
+} else {
+    imageSource = backSlantingDivider;
+}
+---
+
+<div>
+    <Image class="progress-bar" src={imageSource} alt="Dividing loading bar loading across the page" loading="eager"/>
+</div>
+
+<style lang="scss" define:vars={{ slant, delay, duration }}>
+	@use "sass:list";
+	@use "sass:math";
+
+	.progress-bar {
+		margin: 0;
+		animation-fill-mode: backwards;
+		animation-direction: normal;
+		animation-duration: var(--duration);
+		animation-delay: var(--delay);
+		animation-timing-function: steps(1, start);
+		animation-name: var(--slant);
+	}
+
+	@function ith_offset($step_size, $i, $initial_offset: 0%) {
+		@return ($step_size * $i) + $initial_offset; 
+	}
+
+	@function slant_offsets($step_size, $initial_offset: 0%, $limit: 100%)  {
+		$offsets: [];
+		$curr_offset: $initial_offset;
+		$i: 0;
+
+		@while ($curr_offset < $limit) {
+			$curr_offset: math.min($limit, ith_offset($step_size, $i, $initial_offset));
+			$i: $i + 1;
+			$offsets: list.append($offsets, $curr_offset);
+		}
+
+		@return $offsets;
+	}
+
+	@function to_n($n) {
+		$l: [];
+		@for $i from 0 to $n {
+			$l: list.append($l, $i);
+		}
+
+		@return $l;
+	}
+
+	$slanted_polygon_width: 2.91%;
+	$space_between_polygons: 0.79%;
+	$offset_amount: $slanted_polygon_width + $space_between_polygons;
+	$skew_width: 4.37%;
+
+    @keyframes forwards {
+		$top_row_offsets: slant_offsets($offset_amount, $skew_width);
+		$bottom_row_offsets: slant_offsets($offset_amount, $limit: (100% - $skew_width));
+		$indexes: to_n(list.length($top_row_offsets));
+
+		$offsets: list.zip($indexes, $top_row_offsets, $bottom_row_offsets);
+
+		@each $index, $top_x_coord, $bottom_x_coord in $offsets {
+			$p: $index * math.div(100%, list.length($indexes));
+			#{$p} {
+				clip-path: polygon(0% 0%, $top_x_coord 0%, $bottom_x_coord 100%, 0% 100%);
+			} 
+		}
+	}
+
+	@keyframes backwards {
+		$top_row_offsets: slant_offsets($offset_amount, $limit: (100% - $skew_width));
+		$bottom_row_offsets: slant_offsets($offset_amount, $skew_width);
+		$indexes: to_n(list.length($top_row_offsets));
+
+		$offsets: list.zip($indexes, $top_row_offsets, $bottom_row_offsets);
+
+		@each $index, $top_x_coord, $bottom_x_coord in $offsets {
+			$p: $index * math.div(100%, list.length($indexes));
+			#{$p} {
+				clip-path: polygon(0% 0%, $top_x_coord 0%, $bottom_x_coord 100%, 0% 100%);
+			} 
+		}
+	}
+</style>
