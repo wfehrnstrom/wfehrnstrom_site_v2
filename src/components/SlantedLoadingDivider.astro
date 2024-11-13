@@ -17,22 +17,54 @@ interface Props {
 const {slant = "forwards", delay = "0", duration = "5s"} = Astro.props;
 
 
-let imageSource;
+let imageSource, topDividerDisplay, bottomDividerDisplay;
 
 if (slant === "forwards") {
     imageSource = forwardSlantingDivider;
+	topDividerDisplay = "block";
+	bottomDividerDisplay = "none";
 } else {
     imageSource = backSlantingDivider;
+	topDividerDisplay = "none";
+	bottomDividerDisplay = "block";
 }
 ---
-
-<div>
-    <Image class="progress-bar" src={imageSource} alt="Dividing loading bar loading across the page" loading="eager"/>
+<div class="slanting-divider-wrapper">
+	<div class="divider-line"></div>
+		<div>
+			<Image class="progress-bar" src={imageSource} alt="Dividing loading bar loading across the page" loading="eager"/>
+		</div>
+	<div class="divider-line"></div>
 </div>
 
-<style lang="scss" define:vars={{ slant, delay, duration }}>
+<style lang="scss" define:vars={{ slant, delay, duration, topDividerDisplay, bottomDividerDisplay }}>
 	@use "sass:list";
 	@use "sass:math";
+
+	$slanted_polygon_width: 2.91%;
+	$space_between_polygons: 0.79%;
+	$offset_amount: $slanted_polygon_width + $space_between_polygons;
+	$skew_width: 4.37%;
+	$slant_offset: 33px;
+	$total_slanted_polygons_width: 755px;
+	$divider_line_width: $total_slanted_polygons_width - $slant_offset;
+
+	.divider-line {
+		position: relative;
+		left: $slant_offset;
+		width: 100%;
+		height: 1px;
+		background-color: black;
+		animation: 2s ease-out 1 normal extend-line;
+	}
+
+	.slanting-divider-wrapper > div:first-of-type {
+		display: var(--topDividerDisplay);
+	}
+
+	.slanting-divider-wrapper > div:last-of-type {
+		display: var(--bottomDividerDisplay);
+	}
 
 	.progress-bar {
 		margin: 0;
@@ -71,11 +103,6 @@ if (slant === "forwards") {
 		@return $l;
 	}
 
-	$slanted_polygon_width: 2.91%;
-	$space_between_polygons: 0.79%;
-	$offset_amount: $slanted_polygon_width + $space_between_polygons;
-	$skew_width: 4.37%;
-
     @keyframes forwards {
 		$top_row_offsets: slant_offsets($offset_amount, $skew_width);
 		$bottom_row_offsets: slant_offsets($offset_amount, $limit: (100% - $skew_width));
@@ -103,6 +130,15 @@ if (slant === "forwards") {
 			#{$p} {
 				clip-path: polygon(0% 0%, $top_x_coord 0%, $bottom_x_coord 100%, 0% 100%);
 			} 
+		}
+	}
+
+	@keyframes extend-line {
+		from {
+			width: 0;
+		}
+		to {
+			width: 100%;
 		}
 	}
 </style>
