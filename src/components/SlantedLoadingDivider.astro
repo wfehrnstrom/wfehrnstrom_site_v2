@@ -14,7 +14,7 @@ interface Props {
   duration?: string;
 }
 
-const {slant = "forwards", delay = "0", duration = "5s"} = Astro.props;
+const {slant = "forwards", delay = "0s", duration = "5s"} = Astro.props;
 
 
 let imageSource, topDividerDisplay, bottomDividerDisplay;
@@ -32,50 +32,22 @@ if (slant === "forwards") {
 <div class="slanting-divider-wrapper">
 	<div class="divider-line"></div>
 		<div>
-			<Image class="progress-bar" src={imageSource} alt="Dividing loading bar loading across the page" loading="eager"/>
+			<Image class="slanted-divider" src={imageSource} alt="Dividing loading bar loading across the page" loading="eager"/>
 		</div>
 	<div class="divider-line"></div>
 </div>
 
 <style lang="scss" define:vars={{ slant, delay, duration, topDividerDisplay, bottomDividerDisplay }}>
+	@use '../styles/_mixins.scss' as *;
+	
 	@use "sass:list";
 	@use "sass:math";
 
-	$slanted_polygon_width: 2.91%;
-	$space_between_polygons: 0.79%;
-	$offset_amount: $slanted_polygon_width + $space_between_polygons;
-	$skew_width: 4.37%;
+	$slanted_polygon_pixel_width: 22px;
+	$space_between_polygons: 6px;
 	$slant_offset: 33px;
-	$total_slanted_polygons_width: 755px;
-	$divider_line_width: $total_slanted_polygons_width - $slant_offset;
-
-	.divider-line {
-		position: relative;
-		left: $slant_offset;
-		width: 100%;
-		height: 1px;
-		background-color: black;
-		animation: 2s ease-out 1 normal extend-line;
-	}
-
-	.slanting-divider-wrapper > div:first-of-type {
-		display: var(--topDividerDisplay);
-	}
-
-	.slanting-divider-wrapper > div:last-of-type {
-		display: var(--bottomDividerDisplay);
-	}
-
-	.progress-bar {
-		margin: 0;
-		animation-fill-mode: backwards;
-		animation-direction: normal;
-		animation-duration: var(--duration);
-		animation-delay: var(--delay);
-		animation-timing-function: steps(1, start);
-		animation-name: var(--slant);
-	}
-
+	$divider-line-animation-duration: 2s;
+	
 	@function ith_offset($step_size, $i, $initial_offset: 0%) {
 		@return ($step_size * $i) + $initial_offset; 
 	}
@@ -103,33 +75,164 @@ if (slant === "forwards") {
 		@return $l;
 	}
 
-    @keyframes forwards {
-		$top_row_offsets: slant_offsets($offset_amount, $skew_width);
-		$bottom_row_offsets: slant_offsets($offset_amount, $limit: (100% - $skew_width));
-		$indexes: to_n(list.length($top_row_offsets));
+	@function zipped_keyframe($forwards_orientation, $limit_to_width: 100%) {
+		$total_width: 755px;
+		$offset_amount: math.div(($slanted_polygon_pixel_width + $space_between_polygons), $total_width) * 100%;
+		$skew_width: math.div($slant_offset, $total_width) * 100%;
+		$slanted_polygon_width: math.div($slanted_polygon_pixel_width, $total_width) * 100%;
+		$space_between_polygons: math.div($space_between_polygons, $total_width) * 100%;
+		$divider_line_width: $total_width - $slant_offset;
+		$lower_x_limit: $limit_to_width - $skew_width;
 
-		$offsets: list.zip($indexes, $top_row_offsets, $bottom_row_offsets);
+		@if ($forwards_orientation) {
+			$top_row_offsets: slant_offsets($offset_amount, $skew_width, $limit_to_width);
+			$bottom_row_offsets: slant_offsets($offset_amount, $limit: $lower_x_limit);
+			$indexes: to_n(list.length($top_row_offsets));
 
-		@each $index, $top_x_coord, $bottom_x_coord in $offsets {
-			$p: $index * math.div(100%, list.length($indexes));
-			#{$p} {
-				clip-path: polygon(0% 0%, $top_x_coord 0%, $bottom_x_coord 100%, 0% 100%);
-			} 
+			@return list.zip($indexes, $top_row_offsets, $bottom_row_offsets);
+		} @else {
+			$top_row_offsets: slant_offsets($offset_amount, $limit: $lower_x_limit);
+			$bottom_row_offsets: slant_offsets($offset_amount, $skew_width, $limit_to_width);
+			$indexes: to_n(list.length($top_row_offsets));
+
+			@return list.zip($indexes, $top_row_offsets, $bottom_row_offsets);
 		}
 	}
 
-	@keyframes backwards {
-		$top_row_offsets: slant_offsets($offset_amount, $limit: (100% - $skew_width));
-		$bottom_row_offsets: slant_offsets($offset_amount, $skew_width);
-		$indexes: to_n(list.length($top_row_offsets));
+	@mixin polygon_divider_keyframes($total_width: 100%) {
+		@keyframes forwards {
+			$offsets: zipped_keyframe(true, $total_width);
 
-		$offsets: list.zip($indexes, $top_row_offsets, $bottom_row_offsets);
+			@each $index, $top_x_coord, $bottom_x_coord in $offsets {
+				$p: $index * math.div(100%, list.length($offsets));
+				// needed because CSS keyframes in "animation-direction: forwards" will automatically snap to the full 
+				// image if 100% keyframe state isn't the last.
+				@if ($index == list.length($offsets) - 1) {
+					$p: 100%;
+				}
+				#{$p} {
+					clip-path: polygon(0% 0%, $top_x_coord 0%, $bottom_x_coord 100%, 0% 100%);
+				} 
+			}
+		}
 
-		@each $index, $top_x_coord, $bottom_x_coord in $offsets {
-			$p: $index * math.div(100%, list.length($indexes));
-			#{$p} {
-				clip-path: polygon(0% 0%, $top_x_coord 0%, $bottom_x_coord 100%, 0% 100%);
-			} 
+		@keyframes backwards {
+			$offsets: zipped_keyframe(false, $total_width);
+
+			@each $index, $top_x_coord, $bottom_x_coord in $offsets {
+				$p: $index * math.div(100%, list.length($offsets));
+				@if ($index == list.length($offsets) - 1) {
+					$p: 100%;
+				}
+				#{$p} {
+					clip-path: polygon(0% 0%, $top_x_coord 0%, $bottom_x_coord 100%, 0% 100%);
+				} 
+			}
+		}
+	}
+
+	@include for-desktop-viewport {
+		$total_slanted_polygons_width: 755px;
+
+		.divider-line {
+			position: relative;
+			left: $slant_offset;
+			width: 100%;
+			height: 1px;
+			background-color: black;
+			animation: 2s ease-out 1 normal extend-line;
+		}
+
+		.slanting-divider-wrapper > div:first-of-type {
+			display: var(--topDividerDisplay);
+		}
+
+		.slanting-divider-wrapper > div:last-of-type {
+			display: var(--bottomDividerDisplay);
+		}
+
+		.slanted-divider {
+			margin: 0;
+			animation-fill-mode: forwards;
+			animation-direction: normal;
+			animation-duration: var(--duration);
+			animation-delay: var(--delay) + $divider-line-animation-duration;
+			animation-timing-function: steps(1, start);
+			animation-name: var(--slant);
+		}
+
+		@include polygon_divider_keyframes;
+	}
+
+	@include for-custom-horizontal-breakpoints(1100px, $desktop-breakpoint) {
+		$total_slanted_polygons_width: math.div(615px, 755px) * 100%;
+
+		.divider-line {
+			position: relative;
+			left: $slant_offset;
+			width: 100%;
+			height: 1px;
+			background-color: black;
+			animation: $divider-line-animation-duration ease-out 1 normal extend-line;
+		}
+
+		.slanting-divider-wrapper > div:first-of-type {
+			display: var(--topDividerDisplay);
+		}
+
+		.slanting-divider-wrapper > div:last-of-type {
+			display: var(--bottomDividerDisplay);
+		}
+
+		.slanted-divider {
+			margin: 0;
+			animation-fill-mode: forwards;
+			animation-direction: normal;
+			animation-duration: var(--duration);
+			animation-delay: var(--delay) + $divider-line-animation-duration;
+			animation-timing-function: steps(1, start);
+			animation-name: var(--slant);
+		}
+
+		@include polygon_divider_keyframes($total_slanted_polygons_width);
+	}
+
+	@include for-custom-horizontal-breakpoints(860px, 1100px) {
+		$total_slanted_polygons_width: math.div(475px, 755px) * 100%;
+		
+		.divider-line {
+			position: relative;
+			left: $slant_offset;
+			width: 100%;
+			height: 1px;
+			background-color: black;
+			animation: 2s ease-out 1 normal extend-line;
+		}
+
+		.slanting-divider-wrapper > div:first-of-type {
+			display: var(--topDividerDisplay);
+		}
+
+		.slanting-divider-wrapper > div:last-of-type {
+			display: var(--bottomDividerDisplay);
+		}
+
+		.slanted-divider {
+			margin: 0;
+			animation-fill-mode: forwards;
+			animation-direction: normal;
+			animation-duration: var(--duration);
+			animation-delay: var(--delay) + $divider-line-animation-duration;
+			animation-timing-function: steps(1, start);
+			animation-name: var(--slant);
+		}
+
+		@include polygon_divider_keyframes($total_slanted_polygons_width);
+	}
+
+	@include for-custom-horizontal-breakpoints(0px, 860px) {
+		.slanting-divider-wrapper {
+			display: none;
 		}
 	}
 

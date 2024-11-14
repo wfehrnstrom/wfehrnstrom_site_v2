@@ -43,9 +43,20 @@ import SlantedLoadingDivider from '../components/SlantedLoadingDivider.astro';
 	.header-wrapper {
 		@include centered-vertically-in-parent;
 
-		padding-left: 5vw;
-		width: 60vw;
 		display: flex;
+		padding-left: 5vw;
+	}
+
+	@include for-desktop-viewport {
+		.header-wrapper {
+			width: 60vw;
+		}
+	}
+
+	@include for-tablet-viewport {
+		.header-wrapper {
+			width: 40vw;
+		}
 	}
 
 	.header-menu-container {

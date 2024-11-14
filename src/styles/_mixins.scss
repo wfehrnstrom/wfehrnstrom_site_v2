@@ -10,3 +10,36 @@
     top: 50%;
     transform: translateY(-50%);
 }
+
+$desktop-breakpoint: 1275px;
+$tablet-breakpoint: 768px;
+
+@mixin for-desktop-viewport {
+    @media only screen and (min-width: $desktop-breakpoint) {
+        @content;
+    }
+}
+
+@mixin for-tablet-viewport {
+    @media only screen and (min-width: $tablet-breakpoint) and (max-width: $desktop-breakpoint) {
+        @content;
+    }
+}
+
+@mixin for-mobile-viewport {
+    @media only screen and (max-width: $tablet-breakpoint) {
+        @content;
+    }
+}
+
+@mixin for-smaller-than-desktop-viewports {
+    @media only screen and (max-width: $desktop-breakpoint) {
+        @content;
+    }
+}
+
+@mixin for-custom-horizontal-breakpoints($min-width, $max-width) {
+    @media only screen and (min-width: $min-width) and (max-width: $max-width) {
+        @content;
+    }
+}

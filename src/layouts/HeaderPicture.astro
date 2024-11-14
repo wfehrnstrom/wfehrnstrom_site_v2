@@ -9,16 +9,30 @@ import myPicture from '../resources/images/me-cropped.jpg';
 </div>
 
 
-<style>
-    .my-image-container {
+<style lang="scss">
+	@use '../styles/_mixins.scss' as *;
+
+	.my-image-container {
 		position: fixed;
         top: 30vh;
-        left: 65vw;
-		flex: 1 3 26rem;
 		padding: 0;
 		width: 26rem;
 		height: 26rem;
         z-index: 10;
+	}
+
+	@include for-desktop-viewport {
+		.my-image-container {
+        	left: 65vw;
+		}
+	}
+
+	@include for-tablet-viewport {
+		.my-image-container {
+			left: 60vw;
+			width: 24rem;
+			height: 24rem;
+		}
 	}
 
 	.my-image {
