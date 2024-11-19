@@ -1,0 +1,80 @@
+---
+import { Image } from 'astro:assets';
+
+interface SymbolLink {
+	href: string;
+	metadata: ImageMetadata;
+	alt: string;
+}
+
+interface Props {
+	id: string;
+	links: SymbolLink[]; 
+}
+
+let {id, links} = Astro.props;
+
+---
+
+<div id={id} class="external-links">
+	{links.map((link) => (
+		<a href={link.href}> <Image src={link.metadata} alt={link.alt} loading="eager"/></a>
+	))}
+</div>
+
+<style lang="scss">
+	@use '../styles/_mixins.scss' as *;
+
+	.external-links {
+		display: flex;
+		margin: 3rem 0 0 2.5rem;
+	}
+
+	.external-links a {
+		display: block;
+		width: 2.13rem;
+		margin: 0;
+		margin-right: 10rem;
+	}
+
+	.external-links a:hover {
+		opacity: 0.75;
+	}
+
+	.external-links img {
+		object-fit: contain;
+		width: 100%;
+	}
+
+	.external-links img:last-of-type, .external-links a:last-of-type {
+		margin-right: 0;
+	}
+
+	#separated-external-links {
+		display: none;
+		z-index: 4;
+		margin: 0;
+	}
+
+	@include for-custom-horizontal-breakpoints(0px, 860px) {
+		#inlined-external-links {
+			display: none;
+		}
+
+		#separated-external-links {
+			display: inline-flex;
+			@include centered-horizontally-in-parent;
+		}
+
+		.external-links a {
+			margin-right: 20vw;
+		}
+	}
+
+	@include for-custom-horizontal-breakpoints(0px, 860px)  {
+		#separated-external-links {
+			// TODO: Fix. Hacky way to keep external links properly spaced vertically in line with my picture.
+			top: 100vw;
+		}
+	}
+</style>

@@ -12,27 +12,16 @@ import myPicture from '../resources/images/me-cropped.jpg';
 <style lang="scss">
 	@use '../styles/_mixins.scss' as *;
 
+	@use "sass:math";
+
 	.my-image-container {
-		position: fixed;
-        top: 30vh;
-		padding: 0;
+		@include centered-vertically-in-parent(fixed);
+
 		width: 26rem;
 		height: 26rem;
-        z-index: 10;
-	}
-
-	@include for-desktop-viewport {
-		.my-image-container {
-        	left: 65vw;
-		}
-	}
-
-	@include for-tablet-viewport {
-		.my-image-container {
-			left: 60vw;
-			width: 24rem;
-			height: 24rem;
-		}
+		left: 65vw;
+		padding: 0;
+        z-index: 3;
 	}
 
 	.my-image {
@@ -43,5 +32,31 @@ import myPicture from '../resources/images/me-cropped.jpg';
 		margin-left: 0;
 		width: 100%;
 		object-fit: contain;
+	}
+
+	@include for-custom-horizontal-breakpoints(860px, 1100px) {
+		.my-image-container {
+			@include centered-vertically-in-parent(fixed);
+
+			left: 60vw;
+			width: 24rem;
+			height: 24rem;
+		}
+	}
+
+	@include for-custom-horizontal-breakpoints(0px, 860px) {
+		.my-image-container {
+			position: absolute;
+			margin: 1rem;
+			left: 0;
+			right: 0;
+			top: 0;
+			width: auto;
+			height: auto;
+		}
+
+		.my-image-container > .my-image {
+			height: auto;
+		}
 	}
 </style>

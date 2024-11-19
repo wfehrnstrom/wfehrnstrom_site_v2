@@ -14,14 +14,20 @@
 </div>
 
 <style lang="scss">
+    @use '../styles/_mixins.scss' as *;
+
     // A simple page has one element set off from the border of the page and is always the full viewport height
     // In this mixin, I take the convention that padding will not affect the final page width and height. 
+    // I set the min-width and min-height because I want page contents to affect the final width and height.
     @mixin simple-page($padding-left, $padding-top) {
-        width: calc(100% - $padding-left);
-        height: calc(100vh - $padding-top);
+        min-width: calc(100% - $padding-left);
+        min-height: calc(100vh - $padding-top);
+        width: auto;
+        height: auto;
 
         padding-left: $padding-left;
         padding-top: $padding-top;
+        margin: 0;
     }
 
     @mixin grey-contrast-scheme {
@@ -30,7 +36,7 @@
     }
 
     .about-me-page {
-        @include simple-page(5vw, 30vh);
+        @include simple-page(5vw, 25vh);
         @include grey-contrast-scheme;
 
         position: relative;
@@ -43,5 +49,23 @@
 
     p {
         line-height: 1.75;
+    }
+
+    p:last-of-type {
+        margin: 0;
+        height: 150%;
+        padding-bottom: 5vh;
+    }
+
+    @include for-custom-horizontal-breakpoints(0px, 860px) {
+        .about-me-page {
+            padding-top: 5vh;
+        }
+    }
+
+    @include for-mobile-viewport {
+        .about-me-page * {
+            max-width: 75vw;
+        }
     }
 </style>

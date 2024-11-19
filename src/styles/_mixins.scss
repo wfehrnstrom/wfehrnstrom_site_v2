@@ -1,3 +1,7 @@
+$desktop-breakpoint: 1275px;
+$tablet-breakpoint: 768px;
+
+
 @mixin centered-in-parent {
     position: relative;
     top: 50%;
@@ -5,14 +9,17 @@
     transform: translate(-50%, -50%);
 }
 
-@mixin centered-vertically-in-parent {
-    position: relative;
+@mixin centered-vertically-in-parent($position: relative) {
+    position: $position;
     top: 50%;
     transform: translateY(-50%);
 }
 
-$desktop-breakpoint: 1275px;
-$tablet-breakpoint: 768px;
+@mixin centered-horizontally-in-parent($position: relative) {
+    position: $position;
+    left: 50%;
+    transform: translateX(-50%);
+}
 
 @mixin for-desktop-viewport {
     @media only screen and (min-width: $desktop-breakpoint) {

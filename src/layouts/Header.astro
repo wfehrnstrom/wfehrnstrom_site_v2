@@ -1,11 +1,28 @@
 ---
-import { Image } from 'astro:assets';
-
 import githubLogo from '../../public/logos/github-mark.png';
 import linkedinLogo from '../../public/logos/linkedinlogo-bw.png';
 import spotifyLogo from '../../public/logos/spotify-logo-bw.png';
 
 import SlantedLoadingDivider from '../components/SlantedLoadingDivider.astro';
+import SymbolLinkTray from '../components/SymbolLinkTray.astro';
+
+let externalLinkTrayItems = [
+	{
+		href: "https://github.com/wfehrnstrom",
+		metadata: githubLogo,
+		alt: "Github Octocat"
+	},
+	{
+		href: "https://www.linkedin.com/in/william-f-aba4a5119/",
+		metadata: linkedinLogo,
+		alt: "LinkedIn Logo"
+	},
+	{
+		href: "https://open.spotify.com/playlist/4vkeZxk3irDgA88vB26ljg?si=db99d76f4f3c4093",
+		metadata: spotifyLogo,
+		alt: "Spotify Logo"
+	}
+];
 ---
 
 <div class="header-page page">
@@ -18,13 +35,10 @@ import SlantedLoadingDivider from '../components/SlantedLoadingDivider.astro';
                 <li><a href="https://drive.google.com/file/d/1gpMcLU_fAqnOaEJdMx6SarLoOVDa6Khh/view?usp=sharing">Resume</a></li>
             </ul>
 			<SlantedLoadingDivider slant="forwards"/>
-            <div class="external-links">
-                <a href="https://github.com/wfehrnstrom"><Image src={githubLogo} alt="Github Octocat" loading="eager"/></a>
-                <a href="https://www.linkedin.com/in/william-f-aba4a5119/"><Image src={linkedinLogo} 			alt="LinkedIn Symbol" loading="eager"/></a>
-                <a href="https://open.spotify.com/playlist/4vkeZxk3irDgA88vB26ljg?si=db99d76f4f3c4093"><Image src={spotifyLogo} alt="Spotify Symbol" loading="eager"/></a>
-            </div>
+            <SymbolLinkTray id="inlined-external-links" links={externalLinkTrayItems}/>
         </div>
-    </div>		
+    </div>
+	<SymbolLinkTray id="separated-external-links" links={externalLinkTrayItems}/>
 </div>
 
 <style lang="scss">
@@ -41,22 +55,8 @@ import SlantedLoadingDivider from '../components/SlantedLoadingDivider.astro';
 	}
 
 	.header-wrapper {
-		@include centered-vertically-in-parent;
-
 		display: flex;
-		padding-left: 5vw;
-	}
-
-	@include for-desktop-viewport {
-		.header-wrapper {
-			width: 60vw;
-		}
-	}
-
-	@include for-tablet-viewport {
-		.header-wrapper {
-			width: 40vw;
-		}
+		padding-right: 5vw;
 	}
 
 	.header-menu-container {
@@ -72,13 +72,11 @@ import SlantedLoadingDivider from '../components/SlantedLoadingDivider.astro';
 	.header-navigation-menu {
 		display: inline-flex;
 		list-style-type: none;
-		margin: 1.89rem 0 1.89rem 2.5rem;
 		padding: 0;
 	}
 
 	.header-navigation-menu li {
 		padding: 0;
-		margin: 0 7.13rem 0 0;
 		width: 5rem;
 	}
 
@@ -93,13 +91,6 @@ import SlantedLoadingDivider from '../components/SlantedLoadingDivider.astro';
 		padding-left: 0;
 	}
 
-	.external-links a {
-		display: block;
-		width: 2.13rem;
-		margin: 0;
-		margin-right: 10rem;
-	}
-
 	.header-navigation-menu a:link, .header-navigation-menu a:visited {
 		color: black;
 		text-decoration: none;
@@ -109,25 +100,72 @@ import SlantedLoadingDivider from '../components/SlantedLoadingDivider.astro';
 		color: rgb(85 85 85);
 	}
 
-	.external-links {
-		display: flex;
-		margin: 3rem 0 0 2.5rem;
+	@media screen and (min-width: 860px) {
+		.header-wrapper {
+			@include centered-vertically-in-parent;
+
+			padding-left: 5vw;
+		}
+
+		.header-navigation-menu {
+			margin: 1.89rem 0 1.89rem 2.5rem;
+		}
+
+		.header-navigation-menu li {
+			margin: 0 7.13rem 0 0;
+		}
 	}
 
-	.external-links a:hover {
-		display: block;
-		width: 2.13rem;
-		margin: 0;
-		margin-right: 10rem;
-		opacity: 0.75;
+	@include for-custom-horizontal-breakpoints(0px, 860px)  {
+		.header-page {
+			position: static;
+			background-color: rgba(0, 0, 0, 0);
+			height: 113vw;
+		}
+
+		.header-wrapper {
+			position: absolute;
+			top: 0;
+			right: 0;
+			display: flex;
+			z-index: 4;
+			padding-right: 0;
+		}
+
+		.header-menu-container {
+			position: relative;
+			flex-direction: column;
+		}
+
+		.header-navigation-menu {
+			flex-direction: column;
+			margin-top: 5rem;
+			text-align: right;
+		}
+
+		.header-navigation-menu li:first-of-type {
+			margin-top: 0;
+		}
+
+		.header-navigation-menu li {
+			margin-top: 0.75rem;
+		}
+
+		.title-name {
+			position: absolute;
+			top: 1.25rem;
+			right: 0;
+
+			width: 15.28rem;
+			margin-top: 0;
+
+			font-size: 2rem;
+		}
 	}
 
-	.external-links img {
-		object-fit: contain;
-		width: 100%;
-	}
-
-	.external-links img:last-of-type {
-		margin-right: 0;
+	@include for-desktop-viewport {
+		.header-wrapper {
+			width: 60vw;
+		}
 	}
 </style>
